@@ -67,17 +67,17 @@ while True:
             
             # 신뢰도
             confidence = math.ceil((box.conf[0]*100))/100
-            print("신뢰도 =>", confidence)
+            # print("신뢰도 =>", confidence)
 
             # 클래스 이름
             cls = int(box.cls[0])
-            print("클래스 이름 ==>", classNames[cls])
+            # print("클래스 이름 ==>", classNames[cls])
 
             # 객체 정보
             org = [x1, y1]
             font = cv2.FONT_HERSHEY_SIMPLEX
             fontScale = 1
-            color = (0, 0, 255) 
+            color = (0, 0, 125) 
             thickness = 2
 
             cv2.putText(image_with_masks, classNames[cls], org, font, fontScale, color, thickness)
