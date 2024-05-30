@@ -2,19 +2,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-# YOLOv8 모델을 로드합니다.
-model = YOLO('yolov8n-seg.pt')
-
-# 비디오 파일을 엽니다.
-cap = cv2.VideoCapture("data/testvid.mp4")
-
-while True:
-    success, img = cap.read()
-    if not success:
-        break
-
-    results = model.predict(img)
-
+def size_changer(img, results, beat):
     masks = results[0].masks.data.cpu().numpy()
     boxes = results[0].boxes.xyxy.cpu().numpy()
 
@@ -63,10 +51,5 @@ while True:
         # 원본 이미지에 객체 삽입
         combined = cv2.add(img_bg, obj_fg)
         img[start_y:end_y, start_x:end_x] = combined
+    return img
 
-    cv2.imshow("combined_image", img)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    
-cap.release()
-cv2.destroyAllWindows()

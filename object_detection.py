@@ -1,90 +1,128 @@
-from ultralytics import YOLO
 import cv2
 import numpy as np
 import math
-
-# 웹캠 시작
-cap = cv2.VideoCapture(0)
+from ultralytics import YOLO
 
 
-# 객체 클래스
-classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
-              "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-              "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
-              "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
-              "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
-              "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
-              "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
-              "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
-              "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"
-              ]
 
-def predict_on_image(model, img, conf):
-    result = model(img, conf=conf)[0]
+def colorChange(img, results, beat):
+    # 초기 확대 비율 설정
+    scale_factor = 1.0
 
-    # 검출
-    # result.boxes.xyxy   # xyxy 형식의 바운딩 박스, (N, 4)
-    cls = result.boxes.cls.cpu().numpy()    # 클래스, (N, 1)
-    probs = result.boxes.conf.cpu().numpy()  # 신뢰도 점수, (N, 1)
-    boxes = result.boxes.xyxy.cpu().numpy()   # xyxy 형식의 바운딩 박스, (N, 4)
+    # Generate a random color for each class
+    num_classes = 100  # Assuming COCO dataset
+    colors = np.random.randint(0, 255, (num_classes, 3))
+    color_index = 0
 
-    # 세그멘테이션
-    masks = result.masks.data.cpu().numpy()     # 마스크, (N, H, W)
-    masks = np.moveaxis(masks, 0, -1) # 마스크, (H, W, N)
+    # mask, class label 추출
+    masks= results[0].masks.data.cpu().numpy()
     
-    # 원본 이미지 크기로 마스크 크기 조정
-    masks = cv2.resize(masks, (img.shape[1], img.shape[0]))
-    masks = np.moveaxis(masks, -1, 0) # 마스크, (N, H, W)
+    classes = results[0].boxes.cls.cpu().numpy()
 
-    return boxes, masks, cls, probs
-
-
-# YOLO v8 모델 로드
-model = YOLO('yolov8n-seg.pt')
-
-while True:
-    success, img = cap.read()
-    results = model(img, stream=True)
     
-    # YOLOv8로 예측
-    boxes, masks, cls, probs = predict_on_image(model, img, conf=0.2)
+    # Create an empty image for masks
+    mask_image = np.zeros_like(img)
+        # Apply color to each mask
+    for i in range(len(masks)):
+        mask = masks[i]
+        class_id =int ( classes[i])
+        color = colors[color_index]
+        
+        # Resize the mask to match the size of mask_image
+        mask = cv2.resize(mask, (mask_image.shape[1], mask_image.shape[0]))
+
+        # Apply color to the mask
+        mask_image[mask == 1] = color
+
     
-    # 원본 이미지 위에 마스크 오버레이
-    image_with_masks = np.copy(img)
+    # Keep a copy of the original mask image
+    original_mask_image = mask_image.copy()
 
-    # 좌표
-    for r in results:
-        boxes = r.boxes
+    # Handle key inputs for scaling
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord(' '):
+        cv2.waitKey()
+    elif key == ord('a'):
+        scale_factor *= 1.5
+    elif key == ord('d'):
+        scale_factor /= 1.5
+    elif key == ord('[') or key == ord('{'):
+        color_index = (color_index - 1) % num_classes
+    elif key == ord(']') or key == ord('}'):
+        color_index = (color_index + 1) % num_classes
+    elif key == ord('z'):
+        kernel = np.ones((15, 15), np.uint8)
+        mask_image = cv2.dilate(original_mask_image, kernel, iterations=3)
+    elif key == ord('c'):
+        kernel = np.ones((5, 5), np.uint8)
+        original_mask_image = original_mask_image.astype(np.uint8)
+        mask_image = cv2.erode(original_mask_image, kernel, iterations=20)
 
-        for box in boxes:
-            # 바운딩 박스 위치
-            x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # 정수 값으로 변환
-            
-            # put box in cam
-            cv2.rectangle(image_with_masks, (x1, y1), (x2, y2), (255, 255, 0), 1)
-            
-            # 신뢰도
-            confidence = math.ceil((box.conf[0]*100))/100
-            # print("신뢰도 =>", confidence)
 
-            # 클래스 이름
-            cls = int(box.cls[0])
-            # print("클래스 이름 ==>", classNames[cls])
 
-            # 객체 정보
-            org = [x1, y1]
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 1
-            color = (0, 0, 125) 
-            thickness = 2
+    # Combine the original image with the mask image
+    combined_image = cv2.addWeighted(img, 0.5, mask_image, 0.5, 0)
 
-            cv2.putText(image_with_masks, classNames[cls], org, font, fontScale, color, thickness)
-            
-    cv2.imshow('웹캠', image_with_masks)
-    if cv2.waitKey(1) == ord('q'):
-        break
+    # Resize mask image according to scale factor
+    if scale_factor != 1.0:
+        new_size = (int(mask_image.shape[1] * scale_factor), int(mask_image.shape[0] * scale_factor))
+        mask_image_resized = cv2.resize(mask_image, new_size)
+        img_resized = cv2.resize(img, new_size)  # Resize the original image
+    else:
+        mask_image_resized = mask_image
+        img_resized = img  # No need to resize
 
-cap.release()
-cv2.destroyAllWindows()
+    # Combine the original image with the mask image
+    combined_image = cv2.addWeighted(img_resized, 0.7, mask_image_resized, 0.3, 0)
+    return combined_image
+    
+def size_changer(img, results, beat):
+    masks = results[0].masks.data.cpu().numpy()
+    boxes = results[0].boxes.xyxy.cpu().numpy()
+
+    for i in range(len(masks)):
+        mask = masks[i]
+        mask = cv2.resize(mask, (img.shape[1], img.shape[0]))
+
+        # 객체만을 포함하는 마스크를 uint8 타입으로 변환
+        mask_uint8 = (mask > 0.5).astype(np.uint8) * 255
+
+        # 객체를 원본 이미지에서 추출
+        obj = cv2.bitwise_and(img, img, mask=mask_uint8)
+
+        # 경계 상자 추출
+        x1, y1, x2, y2 = boxes[i].astype(int)
+
+        # 경계 상자를 사용하여 객체와 마스크 추출
+        obj_cropped = obj[y1:y2, x1:x2]
+        mask_cropped = mask_uint8[y1:y2, x1:x2]
+
+        # 객체 크기를 두 배로 확대
+        obj_large = cv2.resize(obj_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
+        mask_large = cv2.resize(mask_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
+
+        # 확대된 객체의 크기
+        h_large, w_large = obj_large.shape[:2]
+
+        # 원본 이미지에서 확대된 객체의 중심을 탐지된 객체의 중심으로 맞춤
+        center_x, center_y = (x1 + x2) // 2, (y1 + y2) // 2
+        start_x = max(0, center_x - w_large // 2)
+        start_y = max(0, center_y - h_large // 2)
+        end_x = min(img.shape[1], start_x + w_large)
+        end_y = min(img.shape[0], start_y + h_large)
+
+        # 확대된 객체가 삽입될 위치 계산
+        roi = img[start_y:end_y, start_x:end_x]
+        mask_roi = mask_large[:end_y-start_y, :end_x-start_x]
+        mask_inv = cv2.bitwise_not(mask_roi)
+
+        # ROI 영역에서 객체가 삽입될 부분을 검정색으로 만듦
+        img_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
+        obj_fg = cv2.bitwise_and(obj_large[:end_y-start_y, :end_x-start_x], 
+                                 obj_large[:end_y-start_y, :end_x-start_x], 
+                                 mask=mask_roi)
+
+        # 원본 이미지에 객체 삽입
+        combined = cv2.add(img_bg, obj_fg)
+        img[start_y:end_y, start_x:end_x] = combined
+    return img
