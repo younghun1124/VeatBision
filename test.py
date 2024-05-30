@@ -19,9 +19,6 @@ while True:
     boxes = results[0].boxes.xyxy.cpu().numpy()
 
     for i in range(len(masks)):
-        if i>3:
-            break
-
         mask = masks[i]
         mask = cv2.resize(mask, (img.shape[1], img.shape[0]))
 
@@ -45,7 +42,7 @@ while True:
         # 확대된 객체의 크기
         h_large, w_large = obj_large.shape[:2]
 
-        # 원본 이미지에서 확대된 객체의 위치 조정
+        # 원본 이미지에서 확대된 객체의 중심을 탐지된 객체의 중심으로 맞춤
         center_x, center_y = (x1 + x2) // 2, (y1 + y2) // 2
         start_x = max(0, center_x - w_large // 2)
         start_y = max(0, center_y - h_large // 2)
@@ -66,11 +63,10 @@ while True:
         # 원본 이미지에 객체 삽입
         combined = cv2.add(img_bg, obj_fg)
         img[start_y:end_y, start_x:end_x] = combined
-    cv2.imshow("combined_image", img)
-    if cv2.waitKey(300) & 0xFF == ord('q'):
-        break
 
-    
+    cv2.imshow("combined_image", img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
     
 cap.release()
 cv2.destroyAllWindows()
