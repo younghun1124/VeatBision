@@ -2,30 +2,17 @@ import cv2
 import numpy as np
 import math
 from ultralytics import YOLO
-from ultralytics.utils.plotting import Annotator
 
-# YOLOv8 모델을 로드합니다.
-model = YOLO('yolov8n-seg.pt')
 
-# 웹캠을 시작합니다.
-cap = cv2.VideoCapture("data/testvid.mp4")
 
-# 초기 확대 비율 설정
-scale_factor = 1.0
+def colorChange(img, results, beat):
+    # 초기 확대 비율 설정
+    scale_factor = 1.0
 
-# Generate a random color for each class
-num_classes = 100  # Assuming COCO dataset
-colors = np.random.randint(0, 255, (num_classes, 3))
-color_index = 0
-
-while True:
-    success, img = cap.read()
-    if not success:
-        break
-
-    annotator = Annotator(img, line_width=2)
-
-    results = model.predict(img)
+    # Generate a random color for each class
+    num_classes = 100  # Assuming COCO dataset
+    colors = np.random.randint(0, 255, (num_classes, 3))
+    color_index = 0
 
     # mask, class label 추출
     masks= results[0].masks.data.cpu().numpy()
@@ -53,9 +40,7 @@ while True:
 
     # Handle key inputs for scaling
     key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
-        break
-    elif key == ord(' '):
+    if key == ord(' '):
         cv2.waitKey()
     elif key == ord('a'):
         scale_factor *= 1.5
@@ -89,7 +74,5 @@ while True:
 
     # Combine the original image with the mask image
     combined_image = cv2.addWeighted(img_resized, 0.7, mask_image_resized, 0.3, 0)
-    cv2.imshow("instance-segmentation-object-tracking", combined_image)
-
-cap.release()
-cv2.destroyAllWindows()
+    return combined_image
+    
