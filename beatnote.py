@@ -1,10 +1,10 @@
 import cv2 as cv
 import numpy as np
 
-def get_beat_effect_coefficient(framenum,beat_times,tempo):
+def get_beat_effect_coefficient(framenum,frame,beat_times,tempo):
     
     beat_pulse_list = [i for i in np.linspace(0, 1, 50)] +[i for i in np.linspace(1, 0, 50)]
-    beat_amount_index=fit_beat_frame_time(framenum,beat_times,tempo) 
+    beat_amount_index=fit_beat_frame_time(framenum,frame,beat_times,tempo) 
     print(beat_amount_index,beat_pulse_list[beat_amount_index])
     return beat_pulse_list[beat_amount_index]
 
