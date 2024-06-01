@@ -3,7 +3,7 @@ import numpy as np
 
 def get_beat_effect_coefficient(framenum,beat_times,tempo):
     beat_pulse_list = [0] + [i/99 for i in range(1, 99)] + [0]
-    beat_amount_index=fit_beat_frame_time(framenum,beat_times,tempo)
+    beat_amount_index=fit_beat_frame_time(framenum,beat_times,tempo) 
     return beat_pulse_list[beat_amount_index]
 
 def fit_beat_frame_time(framenum,beat_times,tempo):
@@ -15,7 +15,7 @@ def fit_beat_frame_time(framenum,beat_times,tempo):
     
     scaled_deviation = ((effect_duration/2 + deviation)/effect_duration)*100
     scaled_deviation = int(scaled_deviation)
-    beat_amount_index = max(0, min(100, scaled_deviation))
+    beat_amount_index = max(0, min(99, scaled_deviation))
     return beat_amount_index
     
 def find_nearest_beat_time(framenum, beat_times, frameduration):
