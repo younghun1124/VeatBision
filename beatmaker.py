@@ -1,15 +1,15 @@
 import csv
 import time
 
-def record_timings():
-    timings = []      
-
-    while True:
-        key = input("Press Enter to record timing (or press 'q' to stop): ")
-        if key == "q":
-            break
-        elif key == "":            
-            timings.append(float(time.time()))
+def record_timings(timings=[]):  
+    if not timings:
+        
+        while True:
+            key = input("Press Enter to record timing (or press 'q' to stop): ")
+            if key == "q":
+                break
+            elif key == "":            
+                timings.append(float(time.time()))
             
     timing_intervals = [timings[i+1] - timings[i] for i in range(len(timings)-1)]
     filename = input("Enter the filename to save the timings: ")
@@ -19,4 +19,5 @@ def record_timings():
 
     print("Timings saved successfully.")
 
-record_timings()
+if __name__ == '__main__':
+    record_timings()
