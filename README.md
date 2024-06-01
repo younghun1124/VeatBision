@@ -17,6 +17,12 @@ VeatBision is an open-source software that utilizes computer vision techniques t
 - Music LUT filtering based on music genre: VeatBision applies Look-Up Table (LUT) filtering to the video based on the genre of the music.
 - manually input beat timing to synchronize the video elements with the music beat.
 
+## Planned Features
+
+- PTAM-based insertion of elements that match the lyrics.
+- PTAM-based insertion of lyrics into the music video.
+
+
 ## Installation
 
 To use VeatBision, follow these steps:
