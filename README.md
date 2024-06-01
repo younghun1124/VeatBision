@@ -1,12 +1,17 @@
 # 🎵 VeatBision 👁️
 
-![Beat Vision](markdown_asset/beat%20vision.webp){:height="50%" width="50%"}
+![Beat Vision](markdown_asset/beat%20vision.webp)
 
 Software that enhances the excitement of listening to music by manipulating the images of real videos to match the beat of the music.
+
 
 ## Description
 
 VeatBision is an open-source software that utilizes computer vision techniques to synchronize video elements with the beat of the music. By analyzing the music beat timing and tempo, VeatBision dynamically adjusts the size and color of video and music elements, creating a visually immersive experience.
+
+## Introduction video 
+
+[![Veat Bision](http://img.youtube.com/vi/비디오ID/0.jpg)](https://youtu.be/lrbI0HLB_-c "Meet the Veat Bision")
 
 ## Main Functions
 
