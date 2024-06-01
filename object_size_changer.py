@@ -22,8 +22,8 @@ def size_changer(img, results, beat_coef):
         # 경계 상자를 사용하여 객체와 마스크 추출
         obj_cropped = obj[y1:y2, x1:x2]
         mask_cropped = mask_uint8[y1:y2, x1:x2]
-        FX=2.0+beat_coef
-        FY=2.0+beat_coef
+        FX=1.0+beat_coef * 1.5
+        FY=1.0+beat_coef * 1.5
         # 객체 크기를 두 배로 확대
         obj_large = cv2.resize(obj_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
         mask_large = cv2.resize(mask_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
@@ -52,6 +52,6 @@ def size_changer(img, results, beat_coef):
         # 원본 이미지에 객체 삽입
         combined = cv2.add(img_bg, obj_fg)
         img[start_y:end_y, start_x:end_x] = combined
-        
+
     return img
 
