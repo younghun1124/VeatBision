@@ -10,7 +10,8 @@ def print_beat_at_timings(beat_data):
         time.sleep(float(timing))  # Convert milliseconds to seconds
         print("Beat!")
 
-file_path = "./beats/dd.csv"  # Replace with the actual file path
+if __name__ == '__main__':
+    file_path = "./beats/dd.csv"  # Replace with the actual file path
 
-beat_data = read_beat_data(file_path)
-print_beat_at_timings(beat_data)
+    beat_data = read_beat_data(file_path)
+    print_beat_at_timings(beat_data)
