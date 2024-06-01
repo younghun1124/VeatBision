@@ -33,7 +33,7 @@ def colorChange(img, results, beat):
 
         # Apply color to the mask
         mask_image[mask == 1] = color
-
+ 
     
     # Keep a copy of the original mask image
     original_mask_image = mask_image.copy()
@@ -50,10 +50,10 @@ def colorChange(img, results, beat):
         color_index = (color_index - 1) % num_classes
     elif key == ord(']') or key == ord('}'):
         color_index = (color_index + 1) % num_classes
-    elif key == ord('z'):
+    elif key == ord('z') or beat >=0.5:
         kernel = np.ones((15, 15), np.uint8)
         mask_image = cv2.dilate(original_mask_image, kernel, iterations=3)
-    elif key == ord('c'):
+    elif key == ord('c') or beat >=0.5:
         kernel = np.ones((5, 5), np.uint8)
         original_mask_image = original_mask_image.astype(np.uint8)
         mask_image = cv2.erode(original_mask_image, kernel, iterations=20)
@@ -96,10 +96,11 @@ def size_changer(img, results, beat):
         # 경계 상자를 사용하여 객체와 마스크 추출
         obj_cropped = obj[y1:y2, x1:x2]
         mask_cropped = mask_uint8[y1:y2, x1:x2]
-
+        FX=1.0+beat
+        FY=1.0+beat
         # 객체 크기를 두 배로 확대
-        obj_large = cv2.resize(obj_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
-        mask_large = cv2.resize(mask_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
+        obj_large = cv2.resize(obj_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
+        mask_large = cv2.resize(mask_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
 
         # 확대된 객체의 크기
         h_large, w_large = obj_large.shape[:2]

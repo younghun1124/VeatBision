@@ -50,10 +50,10 @@ def colorChange(img, results, beat):
         color_index = (color_index - 1) % num_classes
     elif key == ord(']') or key == ord('}'):
         color_index = (color_index + 1) % num_classes
-    elif key == ord('z'):
+    elif key == ord('z') or beat >=0.5:
         kernel = np.ones((15, 15), np.uint8)
         mask_image = cv2.dilate(original_mask_image, kernel, iterations=3)
-    elif key == ord('c'):
+    elif key == ord('c') or beat >=0.5:
         kernel = np.ones((5, 5), np.uint8)
         original_mask_image = original_mask_image.astype(np.uint8)
         mask_image = cv2.erode(original_mask_image, kernel, iterations=20)
@@ -61,7 +61,7 @@ def colorChange(img, results, beat):
 
 
     # Combine the original image with the mask image
-    combined_image = cv2.addWeighted(img, 0.5, mask_image, 0.5, 0)
+    combined_image = cv2.addWeighted(img, 0.7, mask_image, 0.3, 0)
 
     # Resize mask image according to scale factor
     if scale_factor != 1.0:
@@ -73,6 +73,7 @@ def colorChange(img, results, beat):
         img_resized = img  # No need to resize
 
     # Combine the original image with the mask image
-    combined_image = cv2.addWeighted(img_resized, 0.7, mask_image_resized, 0.3, 0)
+    alhpa=beat
+    combined_image = cv2.addWeighted(img_resized, 0.7, mask_image_resized, 0.3+alhpa, 0)
     return combined_image
     

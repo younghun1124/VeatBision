@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-def size_changer(img, results, beat):
+def size_changer(img, results, beat_coef):
     masks = results[0].masks.data.cpu().numpy()
     boxes = results[0].boxes.xyxy.cpu().numpy()
 
@@ -22,10 +22,11 @@ def size_changer(img, results, beat):
         # 경계 상자를 사용하여 객체와 마스크 추출
         obj_cropped = obj[y1:y2, x1:x2]
         mask_cropped = mask_uint8[y1:y2, x1:x2]
-
+        FX=1.0+beat_coef
+        FY=1.0+beat_coef
         # 객체 크기를 두 배로 확대
-        obj_large = cv2.resize(obj_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
-        mask_large = cv2.resize(mask_cropped, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_LINEAR)
+        obj_large = cv2.resize(obj_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
+        mask_large = cv2.resize(mask_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
 
         # 확대된 객체의 크기
         h_large, w_large = obj_large.shape[:2]
