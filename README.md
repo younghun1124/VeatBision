@@ -17,11 +17,22 @@ VeatBision is an open-source software that utilizes computer vision techniques t
 - Music LUT filtering based on music genre: VeatBision applies Look-Up Table (LUT) filtering to the video based on the genre of the music.
 - manually input beat timing to synchronize the video elements with the music beat.
 
+
 ## Planned Features
 
 - PTAM-based insertion of elements that match the lyrics.
 - PTAM-based insertion of lyrics into the music video.
 
+- use the YOLO (You Only Look Once) object detection model from the Ultralytics library
+    - Apply image segmentation techniques to isolate specific objects in the video.
+    - Utilize deep learning algorithms to classify and track objects in real-time.
+    - Implement motion detection to trigger visual effects based on movement in the video.
+- Use Convolutional Neural Network (CNN) to analyze and process video frames.
+- Implement CNN-based image classification to identify objects in the video.
+- Utilize CNN for real-time object detection and tracking.
+- Apply CNN-based image segmentation techniques to isolate specific objects in the video.
+- Implement CNN-based style transfer to apply artistic effects to the video.
+- Utilize pre-trained CNN models for various computer vision tasks.
 
 ## Installation
 
