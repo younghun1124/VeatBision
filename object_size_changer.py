@@ -52,5 +52,6 @@ def size_changer(img, results, beat_coef):
         # 원본 이미지에 객체 삽입
         combined = cv2.add(img_bg, obj_fg)
         img[start_y:end_y, start_x:end_x] = combined
+        
     return img
 
