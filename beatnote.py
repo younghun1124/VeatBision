@@ -18,6 +18,7 @@ def fit_beat_frame_time(framenum,frame,beat_times,tempo):
     
     scaled_deviation = ((effect_duration/2 + deviation)/effect_duration)*100
     scaled_deviation = int(scaled_deviation)
+    print(f'frameduration:{frameduration}, beattime:{beattime}, deviation:{deviation}, effect_duration:{effect_duration}')
     print(scaled_deviation)
     beat_amount_index = max(0, min(99, scaled_deviation))
     return beat_amount_index
