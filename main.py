@@ -11,28 +11,29 @@ from object_detection import colorChange,size_changer
 # 비디오 캡처
 if __name__ == '__main__':
     cap = cv2.VideoCapture('data/testvid.mp4')
-    musicpath='music\Diviners feat. Contacreast - Tropic Love [NCS Release].mp3'
+    musicpath='music\될놈\Speo - Make A Stand (feat. Budobo) [NCS Release].mp3'
     tempo, beat_times = extract_beat_timing(musicpath)
-    mode=0
-    print(tempo, beat_times)
-
+    print(beat_times)
+    mode=0   
+    frame_num=0
     # 모델 로드 합니다
     model = YOLO('yolov8n-seg.pt')
 
     # print_beat_at_timings(beat_times_ms)
     while True:
-        
+        frame_num+=1
         # Read an image from 'video'
         valid, img = cap.read()
+        frame_count =int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the current frame count
+        waitsec=int(1/frame_count *1000)
         if not valid:
             print("영상없음")
             break    
-        frame_count =int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the current frame count
-        beat_effect_coeff= get_beat_effect_coefficient(frame_count,beat_times, tempo)
+        beat_effect_coeff= get_beat_effect_coefficient(frame_num,beat_times, tempo)
       
         results = model.predict(img)
         
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(waitsec) & 0xFF
         if key == ord(' '):
             cv2.waitKey()
             
