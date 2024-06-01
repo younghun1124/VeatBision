@@ -29,6 +29,7 @@ if __name__ == '__main__':
             break    
         frame_count =int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the current frame count
         beat_effect_coeff= get_beat_effect_coefficient(frame_count,beat_times, tempo)
+      
         results = model.predict(img)
         
         key = cv2.waitKey(1) & 0xFF
