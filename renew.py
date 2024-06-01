@@ -2,7 +2,19 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-def size_changer(img, results, beat_coef):
+# YOLOv8 모델을 로드합니다.
+model = YOLO('yolov8n-seg.pt')
+
+# 비디오 파일을 엽니다.
+cap = cv2.VideoCapture("data/testvid2.mp4")
+
+while True:
+    success, img = cap.read()
+    if not success:
+        break
+
+    results = model.predict(img)
+
     masks = results[0].masks.data.cpu().numpy()
     boxes = results[0].boxes.xyxy.cpu().numpy()
 
@@ -22,11 +34,10 @@ def size_changer(img, results, beat_coef):
         # 경계 상자를 사용하여 객체와 마스크 추출
         obj_cropped = obj[y1:y2, x1:x2]
         mask_cropped = mask_uint8[y1:y2, x1:x2]
-        FX=1.0+beat_coef * 1.5
-        FY=1.0+beat_coef * 1.5
+        beat = 0.5
         # 객체 크기를 두 배로 확대
-        obj_large = cv2.resize(obj_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
-        mask_large = cv2.resize(mask_cropped, None, fx=FX, fy=FY, interpolation=cv2.INTER_LINEAR)
+        obj_large = cv2.resize(obj_cropped, None, fx=1.0+beat*2, fy=1.0+beat*2, interpolation=cv2.INTER_LINEAR)
+        mask_large = cv2.resize(mask_cropped, None, fx=1.0+beat*2, fy=1.0+beat*2, interpolation=cv2.INTER_LINEAR)
 
         # 확대된 객체의 크기
         h_large, w_large = obj_large.shape[:2]
@@ -53,5 +64,9 @@ def size_changer(img, results, beat_coef):
         combined = cv2.add(img_bg, obj_fg)
         img[start_y:end_y, start_x:end_x] = combined
 
-    return img
-
+    cv2.imshow("combined_image", img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+    
+cap.release()
+cv2.destroyAllWindows()
