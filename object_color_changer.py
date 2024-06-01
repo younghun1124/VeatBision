@@ -11,6 +11,7 @@ def colorChange(img, results, beat):
 
     # Generate a random color for each class
     num_classes = 100  # Assuming COCO dataset
+    np.random.seed(0)
     colors = np.random.randint(0, 255, (num_classes, 3))
     color_index = 0
 
