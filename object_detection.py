@@ -3,8 +3,17 @@ import numpy as np
 import math
 from ultralytics import YOLO
 def size_changer(img, results, beat_coef):
-    masks = results[0].masks.data.cpu().numpy()
-    boxes = results[0].boxes.xyxy.cpu().numpy()
+    masks = np.zeros_like(img)
+    boxes = np.zeros_like(img)
+    # mask, class label 추출
+    if results[0].masks is not None:
+        masks = results[0].masks.data.cpu().numpy()
+    else:
+        return img
+    if results[0].boxes is not None:
+        boxes = results[0].boxes.xyxy.cpu().numpy()
+    else:
+        return img
 
     for i in range(len(masks)):
         mask = masks[i]
@@ -68,7 +77,8 @@ def colorChange(img, results, beat, key,color_index=0):
     # mask, class label 추출
     if results[0].masks is not None:
         masks = results[0].masks.data.cpu().numpy()
-
+    else:
+        return img
     # Create an empty image for masks
     mask_image = np.zeros_like(img)
         # Apply color to each mask

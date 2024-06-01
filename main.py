@@ -11,7 +11,7 @@ from object_detection import colorChange,size_changer
 
 # 비디오 캡처
 if __name__ == '__main__':
-    video_path = 'data/check.mp4'
+    video_path = 'data/testvid5.mp4'
     cap = cv2.VideoCapture(video_path)
 
     # 모델 로드
@@ -43,6 +43,7 @@ if __name__ == '__main__':
         valid, img = cap.read()
         frame = cap.get(cv2.CAP_PROP_FPS)
         waitsec = int(1 / frame * 1000)
+        waitsec = max(waitsec, 30)  # Set a minimum wait time of 30 milliseconds
         
         if not valid:
             print("영상없음")
@@ -68,9 +69,9 @@ if __name__ == '__main__':
             mode = 2
         elif key == ord('q'):
             break
-        elif key == ord('[') or key == ord('{') or beat_effect_coeff >=0.9:
+        elif key == ord('[') or key == ord('{') or beat_effect_coeff >=0.97:
             color_index = (color_index - 1) % 100
-        elif key == ord(']') or key == ord('}') or beat_effect_coeff <=0.1:
+        elif key == ord(']') or key == ord('}') or beat_effect_coeff <=0.03:
             color_index = (color_index + 1) % 100
     
         
