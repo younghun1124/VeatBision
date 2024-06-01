@@ -5,7 +5,7 @@ from ultralytics import YOLO
 
 
 
-def colorChange(img, results, beat):
+def colorChange(img, results, beat, key,color_index=0):
     # 초기 확대 비율 설정
     scale_factor = 1.0
 
@@ -13,8 +13,6 @@ def colorChange(img, results, beat):
     num_classes = 100  # Assuming COCO dataset
     np.random.seed(0)
     colors = np.random.randint(0, 255, (num_classes, 3))
-    color_index = 0
-
     # mask, class label 추출
     masks= results[0].masks.data.cpu().numpy()
     
@@ -40,7 +38,6 @@ def colorChange(img, results, beat):
     original_mask_image = mask_image.copy()
 
     # Handle key inputs for scaling
-    key = cv2.waitKey(1) & 0xFF
     if key == ord(' '):
         cv2.waitKey()
     elif key == ord('a'):

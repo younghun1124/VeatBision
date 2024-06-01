@@ -56,7 +56,7 @@ def size_changer(img, results, beat_coef):
         
     return img
 
-def colorChange(img, results, beat):
+def colorChange(img, results, beat, key,color_index=0):
     # 초기 확대 비율 설정
     scale_factor = 1.0
 
@@ -64,20 +64,16 @@ def colorChange(img, results, beat):
     num_classes = 100  # Assuming COCO dataset
     np.random.seed(0)
     colors = np.random.randint(0, 255, (num_classes, 3))
-    color_index = 0
-
+    masks = np.zeros_like(img)
     # mask, class label 추출
-    masks= results[0].masks.data.cpu().numpy()
-    
-    classes = results[0].boxes.cls.cpu().numpy()
+    if results[0].masks is not None:
+        masks = results[0].masks.data.cpu().numpy()
 
-    
     # Create an empty image for masks
     mask_image = np.zeros_like(img)
         # Apply color to each mask
     for i in range(len(masks)):
         mask = masks[i]
-        class_id =int ( classes[i])
         color = colors[color_index]
         
         # Resize the mask to match the size of mask_image
@@ -91,7 +87,6 @@ def colorChange(img, results, beat):
     original_mask_image = mask_image.copy()
 
     # Handle key inputs for scaling
-    key = cv2.waitKey(1) & 0xFF
     if key == ord(' '):
         cv2.waitKey()
     elif key == ord('a'):
@@ -100,7 +95,7 @@ def colorChange(img, results, beat):
         scale_factor /= 1.5
     elif key == ord('[') or key == ord('{') or beat >=0.5:
         color_index = (color_index - 1) % num_classes
-    elif key == ord(']') or key == ord('}') or beat >=0.5:
+    elif key == ord(']') or key == ord('}') or beat < 0.5:
         color_index = (color_index + 1) % num_classes
     elif key == ord('z') or beat >=0.5:
         kernel = np.ones((15, 15), np.uint8)
@@ -126,5 +121,5 @@ def colorChange(img, results, beat):
 
     # Combine the original image with the mask image
     alhpa=beat
-    combined_image = cv2.addWeighted(img_resized, 0.7, mask_image_resized, 0.3+alhpa, 0)
+    combined_image = cv2.addWeighted(img_resized, 0.9, mask_image_resized, min(0.3, alhpa), 0)
     return combined_image

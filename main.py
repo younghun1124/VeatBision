@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import beatmaker
+import re
 from ultralytics import YOLO
 from music_extract import extract_beat_timing
 from LUTfilter import filter_image_with_lut
@@ -10,21 +11,32 @@ from object_detection import colorChange,size_changer
 
 # 비디오 캡처
 if __name__ == '__main__':
-    video_path = 'data/testvid2.mp4'
-    cap = cv2.VideoCapture('data/testvid.mp4')
+    video_path = 'data/check.mp4'
+    cap = cv2.VideoCapture(video_path)
+
+    # 모델 로드
     model = YOLO('yolov8n-seg.pt')
     musicpath='music\될놈\Speo - Make A Stand (feat. Budobo) [NCS Release].mp3'
     tempo, beat_times = extract_beat_timing(musicpath)
     print(beat_times)
     mode=0   
     frame_num=0
-    # 모델 로드 합니다
+    color_index=0
     # 비디오 녹화 설정
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    output_path = f'{musicpath.split("/")[-1].split(".")[0]}_{video_path.split("/")[-1].split(".")[0]}.avi'
-    output_path= 'output.avi'
-    target = cv2.VideoWriter()
 
+    # '\' 또는 '/'로 분할하고 마지막 요소를 가져옴
+    music_name = re.split(r'[\\\/]', musicpath)[-1]
+    video_name = re.split(r'[\\\/]', video_path)[-1]
+
+    # '.'으로 분할하고 첫 번째 요소를 가져옴.
+    music_name = music_name.rsplit('.',1)[0]
+    video_name = video_name.rsplit('.', 1)[0]
+
+    # 출력 파일 이름
+    output_path = f'{music_name}_{video_name}.avi'
+    target = cv2.VideoWriter()
+    ref_key = ord('0')
     # 비디오 녹화 시작
     while True:
         frame_num += 1
@@ -56,10 +68,15 @@ if __name__ == '__main__':
             mode = 2
         elif key == ord('q'):
             break
+        elif key == ord('[') or key == ord('{') or beat_effect_coeff >=0.9:
+            color_index = (color_index - 1) % 100
+        elif key == ord(']') or key == ord('}') or beat_effect_coeff <=0.1:
+            color_index = (color_index + 1) % 100
+    
         
         # 모드에 따라 이미지 처리
         if mode == 1:
-            img = colorChange(img, results, beat_effect_coeff)
+            img = colorChange(img, results, beat_effect_coeff, key, color_index)
         elif mode == 2:
             img = size_changer(img, results, beat_effect_coeff)
         
