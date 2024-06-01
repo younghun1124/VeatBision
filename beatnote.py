@@ -8,8 +8,8 @@ def get_beat_effect_coefficient(framenum,beat_times,tempo):
     print(beat_amount_index,beat_pulse_list[beat_amount_index])
     return beat_pulse_list[beat_amount_index]
 
-def fit_beat_frame_time(framenum,beat_times,tempo):
-    frame=30
+def fit_beat_frame_time(framenum,frame,beat_times,tempo):
+    
     frameduration=1/frame
     beattime=find_nearest_beat_time(framenum,beat_times,frameduration)
     deviation = framenum*frameduration-beattime
