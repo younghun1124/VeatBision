@@ -47,9 +47,9 @@ def colorChange(img, results, beat):
         scale_factor *= 1.5
     elif key == ord('d'):
         scale_factor /= 1.5
-    elif key == ord('[') or key == ord('{'):
+    elif key == ord('[') or key == ord('{') or beat >=0.5:
         color_index = (color_index - 1) % num_classes
-    elif key == ord(']') or key == ord('}'):
+    elif key == ord(']') or key == ord('}') or beat >=0.5:
         color_index = (color_index + 1) % num_classes
     elif key == ord('z') or beat >=0.5:
         kernel = np.ones((15, 15), np.uint8)
