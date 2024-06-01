@@ -37,24 +37,20 @@ if __name__ == '__main__':
             
         elif key == ord('0'):
             mode=0
-            
         elif key == ord('1'):
             mode=1
-            img = colorChange(img,results, beat_effect_coeff)
-            
-            # img = filter_image_with_lut(img)  # Apply LUT filter to the image
         elif key == ord('2'):
             mode=2
             img = size_changer(img,results, beat_effect_coeff)
-           
-            # img = filter_image_with_lut(img)  # Apply LUT filter to the image
-        
-                # Show the image
-        
-        
-        if cv2.waitKey(33) & 0xFF == ord('q'):
+        elif key == ord('q'):
             break
+
+        if mode == 1:
+            img = colorChange(img,results, beat_effect_coeff)
+        elif mode == 2:
+            img = size_changer(img,results, beat_effect_coeff)
         
+        img = filter_image_with_lut(img)  # Apply LUT filter to the image
         cv2.imshow('veatbision', img)
     cap.release()
     cv2.destroyAllWindows()
