@@ -1,6 +1,6 @@
 # 🎵 VeatBision 👁️
 
-![Beat Vision](markdown_asset/beat%20vision.webp)
+![Beat Vision](markdown_asset/beat%20vision.webp){:height="50%" width="50%"}
 
 Software that enhances the excitement of listening to music by manipulating the images of real videos to match the beat of the music.
 
