@@ -10,7 +10,7 @@ from object_detection import colorChange,size_changer
 
 # 비디오 캡처
 if __name__ == '__main__':
-    cap = cv2.VideoCapture('data/testvid2.mp4')
+    cap = cv2.VideoCapture('data/testvid.mp4')
     musicpath='music\Diviners feat. Contacreast - Tropic Love [NCS Release].mp3'
     tempo, beat_times = extract_beat_timing(musicpath)
     mode=0
@@ -29,9 +29,10 @@ if __name__ == '__main__':
             break    
         frame_count =int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the current frame count
         beat_effect_coeff= get_beat_effect_coefficient(frame_count,beat_times, tempo)
+      
         results = model.predict(img)
         
-        key = cv2.waitKey(33) & 0xFF
+        key = cv2.waitKey(1) & 0xFF
         if key == ord(' '):
             cv2.waitKey()
             
@@ -41,7 +42,7 @@ if __name__ == '__main__':
             mode=1
         elif key == ord('2'):
             mode=2
-            img = size_changer(img,results, beat_effect_coeff)
+            
         elif key == ord('q'):
             break
 
@@ -50,7 +51,7 @@ if __name__ == '__main__':
         elif mode == 2:
             img = size_changer(img,results, beat_effect_coeff)
         
-        img = filter_image_with_lut(img)  # Apply LUT filter to the image
+        # img = filter_image_with_lut(img)  # Apply LUT filter to the image
         cv2.imshow('veatbision', img)
     cap.release()
     cv2.destroyAllWindows()
