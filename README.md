@@ -19,7 +19,7 @@ VeatBision is an open-source software that utilizes computer vision techniques t
 
 [![Veat Bision](https://img.youtube.com/vi/lrbI0HLB_-c/0.jpg)](https://youtu.be/lrbI0HLB_-c "Meet the Veat Bision")
 
-
+⬆️Click to watch video!
 
 
 
