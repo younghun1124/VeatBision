@@ -4,6 +4,12 @@
 
 Software that enhances the excitement of listening to music by manipulating the images of real videos to match the beat of the music.
 
+- size changing
+![alt text](markdown_asset/size.gif)
+
+- color changing
+![alt text](color.gif)
+
 
 ## Description
 
@@ -12,6 +18,11 @@ VeatBision is an open-source software that utilizes computer vision techniques t
 ## Introduction video 
 
 [![Veat Bision](https://i9.ytimg.com/vi_webp/lrbI0HLB_-c/mq2.webp?sqp=CKyN7bIG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgWShWMA8=&rs=AOn4CLDjtJOM8Th-YFoE6GZBGH62nTuT8A)](https://youtu.be/lrbI0HLB_-c "Meet the Veat Bision")
+
+
+
+
+
 
 ## Main Functions
 
