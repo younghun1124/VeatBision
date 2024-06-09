@@ -28,10 +28,14 @@ VeatBision is an open-source software that utilizes computer vision techniques t
 
 - Music beat timing analysis: VeatBision analyzes the beat timing of the music to identify the rhythm and tempo.
 - Music tempo analysis: VeatBision determines the tempo of the music to synchronize the video elements accordingly.
+  ![beatwave](markdown_asset/image.png)
 - Music beat-based video element size change: VeatBision dynamically adjusts the size of video elements based on the music beat.
 - Music beat-based music element color change: VeatBision changes the color of music elements based on the music beat.
 - Music LUT filtering based on music genre: VeatBision applies Look-Up Table (LUT) filtering to the video based on the genre of the music.
+  - veatbision includes 10 custom LUTs in luts folder!
+   ![Alt text](image.png)
 - manually input beat timing to synchronize the video elements with the music beat.
+  - launch beatmaker.py and press 'space' to enter beat timing, and press 'q' to quit and save beat timing file.
 
 
 ## Planned Features
@@ -61,6 +65,7 @@ To use VeatBision, follow these steps:
     - opencv [4.9.0]
     - librosa [0.10.2.post1]
     - numpy [1.22.4]    
+3. launch main.py with python > 3.8
 
 
 ## Contributing
